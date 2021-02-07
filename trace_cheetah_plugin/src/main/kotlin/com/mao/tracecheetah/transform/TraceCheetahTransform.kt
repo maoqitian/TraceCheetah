@@ -1,9 +1,8 @@
 package com.mao.tracecheetah.transform
 
-import com.android.build.api.transform.QualifiedContent
-import com.android.build.api.transform.Transform
-import com.android.build.api.transform.TransformInvocation
+import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
+import org.apache.commons.io.FileUtils
 
 /**
  *  author : maoqitian
@@ -46,8 +45,45 @@ class TraceCheetahTransform :Transform(){
     //检索项目全部内容
     override fun getScopes(): MutableSet<in QualifiedContent.Scope> =TransformManager.SCOPE_FULL_PROJECT
 
-    override fun transform(transformInvocation: TransformInvocation?) {
-        super.transform(transformInvocation)
+    override fun transform(transformInvocation: TransformInvocation) {
         println("======Transform 方法执行===========")
+
+        //获取所有 输入 文件集合
+        val transformInputs = transformInvocation.inputs
+        //输出提供者
+        val transformOutputProvider = transformInvocation.outputProvider
+
+        transformOutputProvider?.deleteAll()
+
+
+        transformInputs.forEach { transformInput ->
+            // Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.appcompat.R$drawable" on path 问题
+            // gradle 3.6.0以上R类不会转为.class文件而会转成jar，因此在Transform实现中需要单独拷贝，TransformInvocation.inputs.jarInputs
+            // jar 文件处理
+            transformInput.jarInputs.forEach {jarInput->
+                val file = jarInput.file
+                println("find jar input:$file.name")
+                val dest = transformOutputProvider.getContentLocation(jarInput.name,jarInput.contentTypes,jarInput.scopes,Format.JAR)
+                //文件复制
+                FileUtils.copyFile(file,dest)
+            }
+
+            //源码文件class 处理
+            //directoryInputs代表着以源码方式参与项目编译的所有目录结构及其目录下的源码文件
+            transformInput.directoryInputs.forEach { directoryInput: DirectoryInput ->
+                   directoryInput.file.walkTopDown()
+                       .filter { it.isFile }
+                       .filter { it.extension == "class" }
+                       .forEach { file ->
+                           println("find class file:${file.name}")
+                           //字节码插桩处理操作
+
+                       }
+                val dest = transformOutputProvider.getContentLocation(directoryInput.name,directoryInput.contentTypes,directoryInput.scopes, Format.DIRECTORY)
+                //文件复制
+                FileUtils.copyDirectory(directoryInput.file,dest)
+            }
+        }
+
     }
 }
