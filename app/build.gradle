@@ -2,6 +2,21 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'trace-cheetah'
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        //自定义插件maven地址，这里以本地目录作为仓库地址目录
+        maven { url '../local_test_repo' }
+    }
+    dependencies {
+        //加载自定义插件 group + module + version
+        classpath 'com.mao.tracecheetah:trace_cheetah_plugin:1.0.0'
+    }
+}
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.0"

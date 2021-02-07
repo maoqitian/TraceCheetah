@@ -48,5 +48,6 @@ class TraceCheetahTransform :Transform(){
 
     override fun transform(transformInvocation: TransformInvocation?) {
         super.transform(transformInvocation)
+        println("======Transform 方法执行===========")
     }
 }

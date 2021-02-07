@@ -1,4 +1,5 @@
 apply plugin: 'java-library'
+apply plugin: 'maven'
 apply plugin: 'kotlin'
 
 dependencies {
@@ -16,3 +17,15 @@ dependencies {
     implementation 'org.ow2.asm:asm-commons:9.0'
 }
 
+
+group='com.mao.tracecheetah'
+version='1.0.0'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            //本地的Maven地址设置
+            repository(url: uri('../local_test_repo'))
+        }
+    }
+}
