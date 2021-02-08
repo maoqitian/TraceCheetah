@@ -1,3 +1,4 @@
+include ':tracelib'
 include ':trace_cheetah_plugin'
 include ':app'
 rootProject.name = "TraceCheetahdemo"
