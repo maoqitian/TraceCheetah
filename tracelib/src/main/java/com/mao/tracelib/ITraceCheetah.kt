@@ -7,6 +7,22 @@ package com.mao.tracelib
  */
 interface ITraceCheetah {
 
+    object EMPTY_TRACER_CHEETAH : ITraceCheetah {
+        override fun traceStart() {
+
+        }
+
+        override fun traceEnd() {
+        }
+
+        override fun methodStart(method: String?) {
+        }
+
+        override fun methodEnd(method: String?) {
+        }
+
+    }
+
     //统计开始
     fun traceStart()
     //统计结束
