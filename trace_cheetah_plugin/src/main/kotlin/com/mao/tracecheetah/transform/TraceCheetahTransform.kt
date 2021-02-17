@@ -3,13 +3,14 @@ package com.mao.tracecheetah.transform
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
 import org.apache.commons.io.FileUtils
+import org.gradle.api.Project
 
 /**
  *  author : maoqitian
  *  date : 2021/2/6 15:04
  *  description : 插件Transform 可以被看作是 Gradle 在编译项目时的一个 task
  */
-class TraceCheetahTransform :Transform(){
+class TraceCheetahTransform(val project: Project) :Transform(){
     /**
      * 设置我们自定义的 Transform 对应的 Task 名称。Gradle 在编译的时候，会将这个名称显示在控制台上
      * @return String
