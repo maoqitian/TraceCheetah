@@ -1,9 +1,14 @@
 package com.mao.tracecheetah.transform
 
+import com.android.SdkConstants
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.mao.tracecheetah.visitor.TraceCheetahASMClassVisitor
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassWriter
+import java.io.FileOutputStream
 
 /**
  *  author : maoqitian
@@ -68,6 +73,7 @@ class TraceCheetahTransform(val project: Project) :Transform(){
                 //文件复制
                 FileUtils.copyFile(file,dest)
             }
+            SdkConstants.DOT_CLASS
 
             //源码文件class 处理
             //directoryInputs代表着以源码方式参与项目编译的所有目录结构及其目录下的源码文件
@@ -78,7 +84,20 @@ class TraceCheetahTransform(val project: Project) :Transform(){
                        .forEach { file ->
                            println("find class file:${file.name}")
                            //字节码插桩处理操作
-
+                           var classReader = ClassReader(file.readBytes())
+                           //ClassWriter.COMPUTE_MAXS 自动合并
+                           var classWriter = ClassWriter(classReader,ClassWriter.COMPUTE_MAXS)
+                           //2.class 读取传入 ASM visitor
+                           var traceCheetahASMClassVisitor = TraceCheetahASMClassVisitor(classWriter)
+                           //3.通过ClassVisitor api 处理后接收对应字节码
+                           //ClassReader.EXPAND_FRAMES 设置ASM就会自动计算插桩后本地变量表和操作数栈
+                           classReader.accept(traceCheetahASMClassVisitor,ClassReader.EXPAND_FRAMES)
+                           //4.处理修改成功的字节码，读取字节数组
+                           val bytes = classWriter.toByteArray()
+                           //写回文件中
+                           val fos =  FileOutputStream(file.path)
+                           fos.write(bytes)
+                           fos.close()
                        }
                 val dest = transformOutputProvider.getContentLocation(directoryInput.name,directoryInput.contentTypes,directoryInput.scopes, Format.DIRECTORY)
                 //文件复制

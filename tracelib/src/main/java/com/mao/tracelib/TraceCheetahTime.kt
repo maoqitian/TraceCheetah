@@ -56,7 +56,6 @@ open class TraceCheetahTime{
            TRACER.traceEnd()
         }
         @JvmStatic
-
         fun methodStart(method: String?) {
            TRACER.methodStart(method)
         }
