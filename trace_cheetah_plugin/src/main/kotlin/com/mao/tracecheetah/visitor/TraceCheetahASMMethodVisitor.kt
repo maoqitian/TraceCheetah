@@ -14,6 +14,10 @@ class TraceCheetahASMMethodVisitor(private val methodVisitor:MethodVisitor, priv
 
     override fun visitCode() {
         super.visitCode()
+        println("方法名称 $methodName")
+
+
+
     }
 
     override fun visitEnd() {

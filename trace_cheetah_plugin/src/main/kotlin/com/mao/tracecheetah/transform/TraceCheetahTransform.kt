@@ -1,8 +1,8 @@
 package com.mao.tracecheetah.transform
 
-import com.android.SdkConstants
 import com.android.build.api.transform.*
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.mao.tracecheetah.extension.TraceCheetahExtension
 import com.mao.tracecheetah.visitor.TraceCheetahASMClassVisitor
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
@@ -15,7 +15,11 @@ import java.io.FileOutputStream
  *  date : 2021/2/6 15:04
  *  description : 插件Transform 可以被看作是 Gradle 在编译项目时的一个 task
  */
-class TraceCheetahTransform(val project: Project) :Transform(){
+class TraceCheetahTransform(private val project: Project) :Transform(){
+
+    //闭包扩展
+    private var traceCheetahExtension: TraceCheetahExtension? = null
+
     /**
      * 设置我们自定义的 Transform 对应的 Task 名称。Gradle 在编译的时候，会将这个名称显示在控制台上
      * @return String
@@ -54,6 +58,11 @@ class TraceCheetahTransform(val project: Project) :Transform(){
     override fun transform(transformInvocation: TransformInvocation) {
         println("======Transform 方法执行===========")
 
+        traceCheetahExtension = project.extensions.create<TraceCheetahExtension>("TraceCheetah",TraceCheetahExtension::class.java)
+
+        println("traceCheetahExtension = ${traceCheetahExtension?.processClassesRegex}," +
+                "${traceCheetahExtension?.codeBeforeMethod} , ${traceCheetahExtension?.codeAfterMethod}")
+
         //获取所有 输入 文件集合
         val transformInputs = transformInvocation.inputs
         //输出提供者
@@ -73,7 +82,6 @@ class TraceCheetahTransform(val project: Project) :Transform(){
                 //文件复制
                 FileUtils.copyFile(file,dest)
             }
-            SdkConstants.DOT_CLASS
 
             //源码文件class 处理
             //directoryInputs代表着以源码方式参与项目编译的所有目录结构及其目录下的源码文件
@@ -82,22 +90,27 @@ class TraceCheetahTransform(val project: Project) :Transform(){
                        .filter { it.isFile }
                        .filter { it.extension == "class" }
                        .forEach { file ->
-                           println("find class file:${file.name}")
-                           //字节码插桩处理操作
-                           var classReader = ClassReader(file.readBytes())
-                           //ClassWriter.COMPUTE_MAXS 自动合并
-                           var classWriter = ClassWriter(classReader,ClassWriter.COMPUTE_MAXS)
-                           //2.class 读取传入 ASM visitor
-                           var traceCheetahASMClassVisitor = TraceCheetahASMClassVisitor(classWriter)
-                           //3.通过ClassVisitor api 处理后接收对应字节码
-                           //ClassReader.EXPAND_FRAMES 设置ASM就会自动计算插桩后本地变量表和操作数栈
-                           classReader.accept(traceCheetahASMClassVisitor,ClassReader.EXPAND_FRAMES)
-                           //4.处理修改成功的字节码，读取字节数组
-                           val bytes = classWriter.toByteArray()
-                           //写回文件中
-                           val fos =  FileOutputStream(file.path)
-                           fos.write(bytes)
-                           fos.close()
+                           if (traceCheetahExtension == null || !traceCheetahExtension!!.enable ||
+                               traceCheetahExtension!!.codeAfterMethod.isEmpty() && traceCheetahExtension!!.codeBeforeMethod.isEmpty()){
+                               println("plugin disable")
+                           }else{
+                               println("find class file:${file.name}")
+                               //字节码插桩处理操作
+                               var classReader = ClassReader(file.readBytes())
+                               //ClassWriter.COMPUTE_MAXS 自动合并
+                               var classWriter = ClassWriter(classReader,ClassWriter.COMPUTE_MAXS)
+                               //2.class 读取传入 ASM visitor
+                               var traceCheetahASMClassVisitor = TraceCheetahASMClassVisitor(classWriter)
+                               //3.通过ClassVisitor api 处理后接收对应字节码
+                               //ClassReader.EXPAND_FRAMES 设置ASM就会自动计算插桩后本地变量表和操作数栈
+                               classReader.accept(traceCheetahASMClassVisitor,ClassReader.EXPAND_FRAMES)
+                               //4.处理修改成功的字节码，读取字节数组
+                               val bytes = classWriter.toByteArray()
+                               //写回文件中
+                               val fos =  FileOutputStream(file.path)
+                               fos.write(bytes)
+                               fos.close()
+                           }
                        }
                 val dest = transformOutputProvider.getContentLocation(directoryInput.name,directoryInput.contentTypes,directoryInput.scopes, Format.DIRECTORY)
                 //文件复制

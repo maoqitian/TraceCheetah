@@ -4,11 +4,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        //自定义插件maven地址，这里以本地目录作为仓库地址目录
+        maven { url '../TraceCheetah/local_test_repo' }
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.0"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
+        //加载自定义插件 group + module + version
+        classpath 'com.mao.tracecheetah:trace_cheetah_plugin:1.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

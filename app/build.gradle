@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'trace-cheetah'
 
-buildscript {
+/*buildscript {
     repositories {
         google()
         jcenter()
@@ -15,7 +15,7 @@ buildscript {
         //加载自定义插件 group + module + version
         classpath 'com.mao.tracecheetah:trace_cheetah_plugin:1.0.0'
     }
-}
+}*/
 
 android {
     compileSdkVersion 30
@@ -49,4 +49,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
+    implementation project (':tracelib')
 }

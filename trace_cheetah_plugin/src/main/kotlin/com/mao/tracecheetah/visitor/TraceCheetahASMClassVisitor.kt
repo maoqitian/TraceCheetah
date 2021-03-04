@@ -33,7 +33,7 @@ class TraceCheetahASMClassVisitor(classVisitor: ClassVisitor) : ClassVisitor(Opc
 
     override fun visitMethod(
         access: Int,
-        name: String?,
+        name: String,
         descriptor: String?,
         signature: String?,
         exceptions: Array<out String>?
@@ -46,7 +46,7 @@ class TraceCheetahASMClassVisitor(classVisitor: ClassVisitor) : ClassVisitor(Opc
         }
 
         println("类名名称 $className")
-        return methodVisitor
+        return TraceCheetahASMMethodVisitor(methodVisitor, className ,name)
     }
 
     override fun visitEnd() {
