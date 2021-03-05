@@ -8,6 +8,8 @@ import android.os.Looper
  * @date 2021/2/9 0009 15:57
  */
 class MThreadTraceCheetah :ThreadTraceCheetah{
+
+
     constructor():super(Looper.getMainLooper())
     constructor(level:Int):super(Looper.getMainLooper(),level)
 }

@@ -3,7 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'trace-cheetah'
-
+//自定义耗时检测插件闭包配置
+TraceCheetah{
+    //enable = true
+    codeBeforeMethod "com.mao.tracelib.TraceCheetahTime.methodStart(\"<simple-class-name>.<method-name>\");";
+    codeAfterMethod "com.mao.tracelib.TraceCheetahTime.methodEnd(\"<simple-class-name>.<method-name>\");";
+}
 /*buildscript {
     repositories {
         google()

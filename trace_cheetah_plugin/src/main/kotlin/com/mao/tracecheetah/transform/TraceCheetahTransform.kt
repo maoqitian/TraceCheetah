@@ -15,7 +15,9 @@ import java.io.FileOutputStream
  *  date : 2021/2/6 15:04
  *  description : 插件Transform 可以被看作是 Gradle 在编译项目时的一个 task
  */
-class TraceCheetahTransform(private val project: Project) :Transform(){
+class TraceCheetahTransform(
+    private val project: Project
+) :Transform(){
 
     //闭包扩展
     private var traceCheetahExtension: TraceCheetahExtension? = null
@@ -58,7 +60,7 @@ class TraceCheetahTransform(private val project: Project) :Transform(){
     override fun transform(transformInvocation: TransformInvocation) {
         println("======Transform 方法执行===========")
 
-        traceCheetahExtension = project.extensions.create<TraceCheetahExtension>("TraceCheetah",TraceCheetahExtension::class.java)
+        traceCheetahExtension = project.extensions.findByName("TraceCheetah") as TraceCheetahExtension?
 
         println("traceCheetahExtension = ${traceCheetahExtension?.processClassesRegex}," +
                 "${traceCheetahExtension?.codeBeforeMethod} , ${traceCheetahExtension?.codeAfterMethod}")
