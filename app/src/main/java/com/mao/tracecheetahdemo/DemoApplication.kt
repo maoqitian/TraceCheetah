@@ -2,6 +2,7 @@ package com.mao.tracecheetahdemo
 
 import android.app.Application
 import com.mao.tracelib.TraceCheetahTime
+import com.mao.tracelib.impl.INSTANCE
 import com.mao.tracelib.impl.MThreadTraceCheetah
 
 /**
@@ -13,8 +14,9 @@ class DemoApplication :Application() {
 
     override fun onCreate() {
         super.onCreate()
+        println("DemoApplication onCreate 方法调用")
         // 初始化 TraceCheetahTime
-        val tracer = MThreadTraceCheetah()
+        val tracer = INSTANCE
         tracer.setThreshold(1)
         TraceCheetahTime.setTracer(tracer)
     }

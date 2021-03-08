@@ -39,7 +39,7 @@ abstract class BaseTraceCheetahTime :ITraceCheetah{
     /**
      * 方法执行超过多少 ms输出Log
      */
-    protected var mThreshold = 5
+    protected var mThreshold = 1
 
     /**
      * 是否启动
@@ -88,7 +88,7 @@ abstract class BaseTraceCheetahTime :ITraceCheetah{
         }
         //记录当前时间戳 方法名
         mTimes[mLevel] = timestamp()
-        mNames[mLevel] = method!!
+        mNames.add(method!!)
 
         ++mLevel
     }
@@ -106,6 +106,7 @@ abstract class BaseTraceCheetahTime :ITraceCheetah{
         --mLevel
         //计算耗时
         val time = timestamp() - mTimes[mLevel]
+        println("当前 $method 方法耗时 $time")
         //日志打印
         outputPrintLog(method,mLevel,time)
     }

@@ -7,9 +7,10 @@ import android.os.Looper
  * @author maoqitian
  * @date 2021/2/9 0009 15:57
  */
-class MThreadTraceCheetah :ThreadTraceCheetah{
+val INSTANCE: MThreadTraceCheetah = MThreadTraceCheetah()
 
+class MThreadTraceCheetah : ThreadTraceCheetah {
 
-    constructor():super(Looper.getMainLooper())
-    constructor(level:Int):super(Looper.getMainLooper(),level)
+    constructor() : super(Looper.getMainLooper())
+    constructor(level: Int) : super(Looper.getMainLooper(), level)
 }
