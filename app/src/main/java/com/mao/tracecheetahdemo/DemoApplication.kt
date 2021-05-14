@@ -3,7 +3,6 @@ package com.mao.tracecheetahdemo
 import android.app.Application
 import com.mao.tracelib.TraceCheetahTime
 import com.mao.tracelib.impl.INSTANCE
-import com.mao.tracelib.impl.MThreadTraceCheetah
 
 /**
  * @Description:

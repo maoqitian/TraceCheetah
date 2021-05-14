@@ -79,7 +79,8 @@ class TraceCheetahTransform(
             // jar 文件处理
             transformInput.jarInputs.forEach {jarInput->
                 val file = jarInput.file
-                println("find jar input:$file.name")
+                val des = transformOutputProvider.getContentLocation(jarInput.name,jarInput.contentTypes,jarInput.scopes,Format.JAR)
+                println("jar input:${file.name} , dest: $des")
                 val dest = transformOutputProvider.getContentLocation(jarInput.name,jarInput.contentTypes,jarInput.scopes,Format.JAR)
                 //文件复制
                 FileUtils.copyFile(file,dest)
@@ -88,7 +89,9 @@ class TraceCheetahTransform(
             //源码文件class 处理
             //directoryInputs代表着以源码方式参与项目编译的所有目录结构及其目录下的源码文件
             transformInput.directoryInputs.forEach { directoryInput: DirectoryInput ->
-                   directoryInput.file.walkTopDown()
+                val des = transformOutputProvider.getContentLocation(directoryInput.name,directoryInput.contentTypes,directoryInput.scopes,Format.JAR)
+                println("Dir : ${directoryInput.file} ,dest: $des")
+                directoryInput.file.walkTopDown()
                        .filter { it.isFile }
                        .filter { it.extension == "class" }
                        .forEach { file ->
