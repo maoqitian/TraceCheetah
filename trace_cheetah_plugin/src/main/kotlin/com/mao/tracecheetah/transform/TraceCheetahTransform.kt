@@ -77,6 +77,10 @@ class TraceCheetahTransform(
             // Caused by: java.lang.ClassNotFoundException: Didn't find class "androidx.appcompat.R$drawable" on path 问题
             // gradle 3.6.0以上R类不会转为.class文件而会转成jar，因此在Transform实现中需要单独拷贝，TransformInvocation.inputs.jarInputs
             // jar 文件处理
+            /**
+             * jarInputs：各个依赖所编译成的 jar ⽂件
+             * des : /app/build/intermediates/transforms/TraceCheetahTransform/....
+             */
             transformInput.jarInputs.forEach {jarInput->
                 val file = jarInput.file
                 val des = transformOutputProvider.getContentLocation(jarInput.name,jarInput.contentTypes,jarInput.scopes,Format.JAR)
@@ -89,6 +93,10 @@ class TraceCheetahTransform(
             //源码文件class 处理
             //directoryInputs代表着以源码方式参与项目编译的所有目录结构及其目录下的源码文件
             transformInput.directoryInputs.forEach { directoryInput: DirectoryInput ->
+                /**
+                 * derectoryInputs：本地 project 编译成的多个 class ⽂件存放的⽬
+                 * des: /app/build/intermediates/transforms/TraceCheetahTransform/....
+                 */
                 val des = transformOutputProvider.getContentLocation(directoryInput.name,directoryInput.contentTypes,directoryInput.scopes,Format.JAR)
                 println("Dir : ${directoryInput.file} ,dest: $des")
                 directoryInput.file.walkTopDown()
