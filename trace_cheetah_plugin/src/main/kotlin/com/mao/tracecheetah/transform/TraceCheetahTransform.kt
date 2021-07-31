@@ -5,7 +5,7 @@ import com.android.build.gradle.internal.pipeline.TransformManager
 import com.mao.tracecheetah.extension.TraceCheetahExtension
 import com.mao.tracecheetah.visitor.TraceCheetahASMClassVisitor
 import org.gradle.api.Project
-import org.gradle.internal.impldep.org.apache.commons.io.FileUtils
+import org.apache.commons.io.FileUtils
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
 import java.io.FileOutputStream
@@ -109,11 +109,11 @@ class TraceCheetahTransform(
                            }else{
                                println("find class file:${file.name}")
                                //字节码插桩处理操作
-                               var classReader = ClassReader(file.readBytes())
+                               val classReader = ClassReader(file.readBytes())
                                //ClassWriter.COMPUTE_MAXS 自动合并
-                               var classWriter = ClassWriter(classReader,ClassWriter.COMPUTE_MAXS)
+                               val classWriter = ClassWriter(classReader,ClassWriter.COMPUTE_MAXS)
                                //2.class 读取传入 ASM visitor
-                               var traceCheetahASMClassVisitor = TraceCheetahASMClassVisitor(classWriter)
+                               val traceCheetahASMClassVisitor = TraceCheetahASMClassVisitor(classWriter)
                                //3.通过ClassVisitor api 处理后接收对应字节码
                                //ClassReader.EXPAND_FRAMES 设置ASM就会自动计算插桩后本地变量表和操作数栈
                                classReader.accept(traceCheetahASMClassVisitor,ClassReader.EXPAND_FRAMES)

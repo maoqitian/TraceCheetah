@@ -22,6 +22,6 @@ class TraceCheetahPlugin :Plugin<Project>{
         project.extensions.create("TraceCheetah",TraceCheetahExtension::class.java)
         val appExtension = project.extensions.findByType(AppExtension::class.java)
         val transform = TraceCheetahTransform(project)
-        appExtension.registerTransform(transform = transform)
+        appExtension?.registerTransform(transform = transform)
     }
 }
